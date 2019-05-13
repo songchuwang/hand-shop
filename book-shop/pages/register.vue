@@ -142,6 +142,7 @@
           if (valid) {
             this.$axios.post("/users/signup", {
                 username: window.encodeURIComponent(this.ruleForm.name),
+                name: this.ruleForm.name,
                 password: CryptoJs.MD5(this.ruleForm.pwd).toString(),
                 email: this.ruleForm.email,
                 code: this.ruleForm.code

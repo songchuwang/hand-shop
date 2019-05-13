@@ -14,18 +14,15 @@ const store = ()=>new Vuex.Store({
   actions: {
     async nuxtServerInit({commit}, {req, app}) {
       {
-        app.$axios.get('/users/getUser').then(res => {
-          console.log('test',res.data._id);
-          
-          commit('geo/setUserId', res.data._id)
-        })
-        // commit('geo/setPosition', status === 200 ? {city, province} : {city: '', province: ''})
+        let res =  await app.$axios.get('/users/getUser')
+        console.log(res.data._id);
+        commit('geo/setUserId', res.data._id);  
       }
       
-      {
-        const {status, data: {province, city}} = await app.$axios.get('/geo/getPosition')
-        commit('geo/setPosition', status === 200 ? {city, province} : {city: '', province: ''})
-      }
+      // {
+      //   const {status, data: {province, city}} = await app.$axios.get('/geo/getPosition')
+      //   commit('geo/setPosition', status === 200 ? {city, province} : {city: '', province: ''})
+      // }
 
       // {
       //   const {status, data: {menu}} = await app.$axios.get('/geo/menu')

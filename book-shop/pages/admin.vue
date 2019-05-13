@@ -32,9 +32,32 @@
           </div>
         </div>
       </el-tab-pane>
+      
       <!-- <el-tab-pane label="用户管理" name="second">配置管理</el-tab-pane> -->
-      <!-- <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-      <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane> -->
+      <!-- <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane> -->
+      <el-tab-pane label="用户管理" name="fourth">
+        <div class="title">
+          <div class="container_table">
+            <el-table :data="this.userTable.slice((currentPage-1)*pagesize,currentPage*pagesize)" stripe style="width: 100%"
+              :default-sort="{prop: 'date', order: 'descending'}">
+              <el-table-column type="selection" width="55">
+              </el-table-column>
+              <el-table-column prop="name" label="用户名" width="500">
+              </el-table-column>
+              <el-table-column prop="email" label="邮箱" width="500">
+              </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button type="danger" @click='removeUser(scope.row)'>删除用户</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-pagination class="fy" layout="prev, pager, next" @current-change="current_change" :total="total"
+              background>
+            </el-pagination>
+          </div>
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -44,6 +67,7 @@
     layout: 'default',
     data() {
       return {
+        userTable:[],
         activeName: 'first',
         goods:[],
         currentPage1: 5,
@@ -60,6 +84,30 @@
       };
     },
     methods: {
+      getAllUser() {
+        this.$axios.post('/users/getAllUser').then(res=>{
+          this.userTable = res.data.data.filter(item=>{
+            return item.username != 'admin';
+          });
+          
+          
+        })
+      },
+      removeUser(item) {
+        console.log(item._id);
+        
+        this.$axios.post('/users/removeUser',{
+          _id:item._id
+        }).then(res=>{
+          if(res.status == 200){
+            this.$message.success('删除成功')
+            setTimeout(()=>{
+              window.location.reload()
+            },1000)
+          }
+        })
+        
+      },
       removeGoods(item) {
         this.$axios.post('/goods/removeGoods', {_id:item._id}).then(res=>{
           if(res.status == 200){
@@ -69,7 +117,6 @@
             },1000)
           }
         })
-        
       },
       getAllGoods() {
         this.$axios.post('/goods/getGoods').then(res=>{
@@ -112,6 +159,7 @@
     },
     created () {
       this.getAllGoods();
+      this.getAllUser();
     }
   }
 

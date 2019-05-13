@@ -21,6 +21,7 @@ router.post("/signup", async (ctx)=>{
   const {
     username,
     password,
+    name,
     email,
     code
   } = ctx.request.body;//post方式
@@ -62,6 +63,7 @@ router.post("/signup", async (ctx)=>{
   let nuser = await User.create({
     username,
     password,
+    name,
     email
   })
   if(nuser) {
@@ -196,6 +198,47 @@ router.get('/getUser', async (ctx)=>{
       email: ""
     }
   }
+})
+
+//获取所有用户信息
+router.post('/getAllUser', async (ctx)=>{
+  let user = await User.find({})
+  if(user){
+    ctx.body = {
+      code:0,
+      msg:'查询成功',
+      data:user
+    }
+  }else {
+    ctx.body = {
+      code:-1,
+      msg:'查询失败'
+    }
+  }
+})
+//删除用户
+router.post('/removeUser', async (ctx) => {
+  const {
+    _id
+  } = ctx.request.body;
+
+  let res =await User.remove({_id}, function (err, docs) {
+    if (err) console.log(err);
+    console.log('删除成功：' + docs);
+  });
+  if(res){
+    ctx.body = {
+      code:0,
+      msg:'用户成功删除'
+    }
+  }else{
+    ctx.body = {
+      code: -1,
+      msg:'删除失败'
+    }
+  }
+  
+
 })
 
 /** 
